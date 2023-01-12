@@ -23,11 +23,43 @@ float mixValue = 0.2f;
 
 
 //vertices to make a rectangle hopefully
-float vertices[] = { // positions       // colors         // texture coords
-					 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
-					 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-					-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-					-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
+float vertices[] = { // positions           // texture coords
+					   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+						0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,
+					   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
+					   -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,
+					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+					   -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+					   -0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+					   -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+						0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+						0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+						0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+						0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
+						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
+					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,
+						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+					   -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,
+					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f
 };
 
 unsigned int indices[] = {
@@ -129,14 +161,12 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	//enable vertex attrib arrays
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
 
 	// unbind buffer (everything has been registered in Vertex Attribute Pointer)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -189,7 +219,7 @@ int main()
 	//MATHS
 	
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
+	
 
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -215,6 +245,8 @@ int main()
 		
 
 		//put the transform in our shader
+		model = glm::rotate(model, 0.0005f * (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
 		GLuint modelLoc = glGetUniformLocation(ourShader.ID, "model");
 		GLuint viewLoc = glGetUniformLocation(ourShader.ID, "view");
 		GLuint perspectiveLoc = glGetUniformLocation(ourShader.ID, "perspective");
@@ -226,9 +258,8 @@ int main()
 		//draw triangle
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
 		//check and call events and swap buffers
