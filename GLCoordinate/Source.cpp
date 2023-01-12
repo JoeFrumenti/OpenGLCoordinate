@@ -188,8 +188,14 @@ int main()
 
 	//MATHS
 	
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
 
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
+	glm::mat4 perspective = glm::mat4(1.0f);
+	perspective = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	//RENDER LOOP
 	while (!glfwWindowShouldClose(window))
@@ -206,13 +212,15 @@ int main()
 
 		//Cool transform stuff
 		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-		trans = glm::rotate(trans, float(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
-		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+		
 
 		//put the transform in our shader
-		GLuint transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		GLuint modelLoc = glGetUniformLocation(ourShader.ID, "model");
+		GLuint viewLoc = glGetUniformLocation(ourShader.ID, "view");
+		GLuint perspectiveLoc = glGetUniformLocation(ourShader.ID, "perspective");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(perspective));
 
 
 		//draw triangle
@@ -221,13 +229,7 @@ int main()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		trans = glm::mat4(1.0f);
-		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-		trans = glm::scale(trans, glm::vec3(float(sin(glfwGetTime())), float(sin(glfwGetTime())), float(sin(glfwGetTime()))));
 
-		transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//check and call events and swap buffers
 		glfwSwapBuffers(window);
