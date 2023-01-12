@@ -30,30 +30,35 @@ float vertices[] = { // positions           // texture coords
 						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
 					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,
 					   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
 					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
 						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
 						0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
 						0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
 					   -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,
 					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
+					   
 					   -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
 					   -0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
 					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
 					   -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
-						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
+						
+					   0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
 						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
 						0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 						0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 						0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
 						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
-					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+					   
+						-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
 						0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
 						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
 						0.5f, -0.5f,  0.5f, 1.0f, 0.0f,
 					   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
 					   -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+					   
 					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,
 						0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
 						0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
@@ -142,6 +147,9 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	//Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+
 	
 	Shader ourShader("vertexshader.vs", "fragmentshader.fs");
 	std::string offval = "offsetvalue";
@@ -162,7 +170,7 @@ int main()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	//enable vertex attrib arrays
 	glEnableVertexAttribArray(0);
@@ -232,6 +240,9 @@ int main()
 	{
 		//input
 		processInput(window);
+
+		//clear depth test
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//rendering commands
 		ourShader.setFloat("mixValue", mixValue);
