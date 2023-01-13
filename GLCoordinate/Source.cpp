@@ -67,9 +67,19 @@ float vertices[] = { // positions           // texture coords
 					   -0.5f,  0.5f, -0.5f, 0.0f, 1.0f
 };
 
-unsigned int indices[] = {
-					0,1,3,
-					1,2,3
+
+//CUBES
+glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f, 0.0f, 0.0f),
+	glm::vec3(2.0f, 5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f, 3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f, 2.0f, -2.5f),
+	glm::vec3(1.5f, 0.2f, -1.5f),
+	glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
 
@@ -166,8 +176,8 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -254,23 +264,40 @@ int main()
 		//Cool transform stuff
 		glm::mat4 trans = glm::mat4(1.0f);
 		
+		for (int i = 0; i < 10; i++)
+		{
+			glm::mat4 trans = glm::mat4(1.0);
+			trans = glm::translate(trans, cubePositions[i]);
+			trans = glm::rotate(trans, glm::radians(20.0f * i), glm::vec3(1.0f, 0.3f, 0.3f));
+			
+
+			if (i % 3 == 0)
+			{
+				trans = glm::rotate(trans, glm::radians(10.0f * (float)glfwGetTime()), glm::vec3(1.0f, 0.3f, 0.3f));
+			}
+
+			ourShader.setMat4("model", trans);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
 
 		//put the transform in our shader
 		model = glm::rotate(model, 0.0005f * (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-		GLuint modelLoc = glGetUniformLocation(ourShader.ID, "model");
-		GLuint viewLoc = glGetUniformLocation(ourShader.ID, "view");
-		GLuint perspectiveLoc = glGetUniformLocation(ourShader.ID, "perspective");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(perspectiveLoc, 1, GL_FALSE, glm::value_ptr(perspective));
+
+		//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		
+		ourShader.setMat4("view", view);
+		ourShader.setMat4("perspective", perspective);
+
 
 
 		//draw triangle
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
 
 
 		//check and call events and swap buffers
